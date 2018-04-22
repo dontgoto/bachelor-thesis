@@ -1,0 +1,117 @@
+\chapter{Anhang}
+
+
+\section{Verwendete Software}
+Die Vorprozessierung der im HDF5~\cite{hdf5} Format vorliegenden Daten wurde mit verschiedenen Python~\cite{pythonFirst} Paketen durchführt.
+H5py~\cite{h5py} zum Einlesen und erneuten Schreiben der Daten.
+Numpy~\cite{numpy} und Pandas~\cite{pandas} zum Anwenden von mathematischen Funktionen als auch zum Transformieren der Daten.
+Die Attributsselektion wurde mit der R~\cite{R} Bibliothek mRMRe~\cite{mrmre} in Python über den R zu Python wrapper rpy2~\cite{rpy2} durchgeführt.
+Die Separation wurde mit dem WEKA Random Forest~\cite{Weka2009} in RapidMiner~\cite{RapidMiner} durchgeführt. 
+Alle Grafiken wurden mit Matplotlib~\cite{matplotlib} erstellt.
+
+\section{NaN-Verteilung}
+\label{nanverteilung}
+
+\begin{figure}
+\begin{center}
+    \includegraphics{nanratio}
+\end{center}
+\vspace{-2em}
+    \caption{Histogramm der NaN-Anteile.}
+\label{fig:nanverteilung}
+\end{figure}
+
+\section{Vergleich von gewichteten und ungewichteten Korrelationskoeffizienten}
+\label{korrkoeff}
+
+Die Ereignisse sind je nach ihrer Energie unterschiedlich gewichtet.
+Weiter kann nicht ausgeschlossen werden, dass die einzelnen Attribute für verschiedene Energiebereiche unterschiedlich stark miteinander oder mit dem Zielattribut korreliert sind.
+Diese sich verändernden Korrelationen würden für eine Verfälschung der Attributsauswahl sorgen.
+Daher wird untersucht, ob die Gewichtung der Ereignisse die Korrelationskoeffizienten beeinflusst.
+Zum Vergleich werden die gewichteten und ungewichteten Pearson-Korrelationskoeffizienten der Attribute verwendet.
+
+In Abbildungen~\ref{fig:korrelationen} und~\ref{fig:crosscorrelation} ist zu sehen, dass die relativen Abweichungen der beiden Arten von Koeffizienten nur gering sind.
+Die gewichteten und ungewichteten Koeffizienten sind also weitestgehend äquivalent.
+
+\begin{figure}
+\begin{center}
+    \includegraphics{comparison/correlation_energy}
+\end{center}
+\vspace{-2em}
+\caption{Histogramm der relativen Differenzen zwischen gewichteten und ungewichteten Pearson-Korrelationskoeffizienten der Attribute mit der wahren Energie.}
+\label{fig:korrelationen}
+\end{figure}
+\begin{figure}
+\begin{center}
+    \includegraphics{comparison/crosscorrelation}
+\end{center}
+\vspace{-2em}
+\caption{Histogramm der relativen Differenzen zwischen gewichteten und ungewichteten Pearson-Korrelationskoeffizienten aller möglichen Attributskombinationen.}
+\label{fig:crosscorrelation}
+\end{figure}
+
+
+
+
+\section{Vergleich von mRMR Methoden anhand von Testseparationen}
+Verglichen wird die in Abschnitten~\ref{neutrinomrmr} und~\ref{myonmrmr} verwendete mRMRe Variante und die mRMR der RapidMiner Feature Selection Extension~\cite{FeatureSelection} mit dem MID Kriterium (weiter FSE-mRMR genannt).
+Dafür werden fünffach kreuzvalidierte Separationen von Elektron- und Myon-Neutrinos mit einem Random Forest durchgeführt.
+Bei beiden Separationsketten unterscheiden sich nur die Arten der Attributsselektionen.
+Die gemittelten relativen Abweichungen der Reinheiten und Effizienzen sind in Abbildung~\ref{fig:mrmremid} dargestellt.
+Positive Werte stehen für eine höhere Qualität der Separation auf Basis der Attributsmenge der mRMRe Methode im Vergleich zur FSE-mRMR.
+Sie sind bis zu Konfidenzwerten von $\num{0.4}$ mit Null verträglich.
+Danach weichen sie um bis zu 5\% voneinander ab, die Standardabweichungen werden teilweise so groß wie die relativen Abweichungen selbst.
+Die relative Reinheit der mRMRe ist höher und ihre relative Effizienz niedriger.
+Die mRMRe Methode liefert also vergleichbare Ergebnisse wie die FSE-mRMR Varianten. 
+\begin{figure}
+\begin{center}
+    \includegraphics{comparison/mrmre_mid}
+\end{center}
+\vspace{-2em}
+\caption{Aufgetragen sind die gemittelten relativen Differenzen der Qualitätsparameter Effizienz und Reinheit zweier Separationen mit vorheriger Attributsselektion durch mRMRe und FSE-mRMR. Positive Werte  stehen für eine bessere Separation mit der mRMRe Attributsmenge. Fehlerbalken sind die Standardabweichungen der Mittelwerte.}
+\label{fig:mrmremid}
+\end{figure}
+
+
+
+\section{Separationsqualität der EXT-Veto Neutrinoselektion}
+\label{extvetoAnhang}
+Dieses Kapitel beinhaltet der Vollständigkeit halber Grafiken für das EXT-Veto, die in Abschnitt~\ref{neutrinoseparation} und~\ref{myonseparation} für das DC-Veto dargestellt wurden.
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/EXTconfhistNu}
+\end{center}
+\vspace{-2em}
+\caption{Aus der Neutrinoseparation mit dem EXT-Veto. Histogramme der Konfidenzverteilungen der gemittelten Ereignisraten von Myonen (Untergrund) und Neutrinos (Signal) in Hertz. Die Standardabweichungen aus der fünffachen Kreuzvalidierung sind als Fehlerbalken dargestellt. }
+\end{figure}
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/EXTqualityNUENUMU}
+\end{center}
+\vspace{-2em}
+\caption{Aus der Neutrinoseparation mit dem EXT-Veto. Aufgetragen sind die gemittelten Qualitätsparameter Reinheit (rot) und Effizienz (blau) mit ihren Standardabweichungen gegen die Konfidenz.}
+\end{figure}
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/EXTconfhistNUENUMU}
+\end{center}
+\vspace{-2em}
+\caption{Aus der Myon-Neutrinoseparation mit dem EXT-Veto. Histogramme der Konfidenzverteilungen der gemittelten Ereignisraten von Myonen (Untergrund) und Neutrinos (Signal) in Hertz. Die Standardabweichungen aus der fünffachen Kreuzvalidierung sind als Fehlerbalken dargestellt. }
+\end{figure}
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/EXTqualityNu}
+\end{center}
+\vspace{-2em}
+\caption{Aus der Myon-Neutrinoseparation mit dem EXT-Veto. Aufgetragen sind die gemittelten Qualitätsparameter Reinheit (rot) und Effizienz (blau) mit ihren Standardabweichungen gegen die Konfidenz.}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+    \includegraphics{/comparison/rates/eSigExtNu}
+\end{center}
+\vspace{-2em}
+    \caption{Aufgetragen ist wahre Energie gegen rekonstruierte Energie nach dem Konfidenzschnitt bei 0.9 für das EXT-Veto. Die absoluten Ereignisraten sind farblich kodiert.}
+\label{fig:eNUEXT}
+\end{figure}
+

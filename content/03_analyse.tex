@@ -1,0 +1,321 @@
+\chapter{Analyse}
+Ziel dieser Analyse ist ein Vergleich des DC- und EXT-Vetos anhand der Ereignisse, die diese Vetos passieren.
+Betrachtet werden die Differenzen der Raten an gefundenen Neutrinokandidaten und Myon-Neutrinokandidaten nach den Separationen, als auch die Korrelation ihrer rekonstruierten und wahren Energien.
+
+Dafür werden drei Klassen von Ereignissen verwendet.
+Elektron- und Myon-Neutrino Datensätze auf Basis der IceCube Detektorkonfiguration aus dem Jahr 2013, die mit \texttt{GENIE} \cite{GENIE} erstellt wurden.
+Tau-Neutrinos werden in der Analyse nicht beachtet, da ihre Ereignissignatur der von Elektron-Neutrinos gleicht und für sie kein Modell für den Fluss vorhanden ist.
+Die Energie der simulierten Neutrinos liegt im Bereich von $\SIrange{1}{1000}{GeV}$.
+Sie werden nach einem Spektrum mit spektralem Index $γ=2.0$ erzeugt und auf eines mit $γ=2.7$ umgewichtet, was dem erwarteten Neutrinofluss entspricht.
+Dadurch erhält jedes Ereignis ein Gewichtsattribut, das nur zur Berechnung der finalen Qualitätsparameter und Raten verwendet wird.
+Zusätzlich werden \texttt{CORSIKA} \cite{corsika} Myonen-Datensätze verwendet, die mit einem Hörandel Modell \cite{horandel2004models} im Bereich einer Primärteilchenenergie von $\SIrange{600}{e11}{GeV}$ produziert wurden.
+
+Damit die Daten mit Methoden des maschinellen Lernens verarbeitet werden können, müssen sie erst vorprozessiert werden.
+Dabei werden Attribute entfernt, die konstant oder nicht in jedem Datensatz vorhanden sind, keine Informationen über die Physik der Ereignisse enthalten, oder einen Anteil an not a number (NaN) Werten von über 80\% haben. 
+NaNs treten unter anderem bei fehlgeschlagene Rekonstruktionen auf. 
+Die NaN-Verteilung der Attribute ist im Anhang ~\ref{nanverteilung} dargestellt.
+Zuletzt werden Attribute entfernt deren Pearson-Korrelationskoeffizienten mit mindestens einem der noch vorhanden Attribute größer als 0.95 ist.
+Dadurch ist eine höhere Stabilität der Analyse zu erwarten~\cite{DataminingOnIce}. 
+Es werden die ungewichteten Pearson-Korrelationskoeffizienten verwendet, da sie für die verwendeten Daten weitestgehend mit den gewichteten Korrelationskoeffizienten übereinstimmen (siehe Anhang~\ref{korrkoeff}).
+Von den anfänglich vorhandenen 2000 Attributen bleiben nach diesen Schritten 70 übrig.
+
+Die Ereignisselektion ist in zwei Stufen aufgeteilt.
+Erst werden alle Neutrinos von Myonen getrennt. 
+Dafür wird eine Attributsselektion mittels mRMRe durchgeführt und dann mit einem Random Forest separiert.
+Für den Random Forest wird ein Konfidenzschnitt gewählt, der einen Kompromiss zwischen Reinheit des Signals und der Rate an Signalereignissen darstellt.
+Im zweiten Schritt werden Myon-Neutrinos von Elektron-Neutrinos getrennt, das Vorgehen ist wie im ersten Schritt.
+Diese zweischrittige Separationskette wird für jede Vetodefinition ein Mal durchgeführt.
+Da sich die in mRMRe für die Relevanz verwendeten Korrelationskoeffizienten durch Gewichtung nicht Signifikant verändern, wird hier auf die Gewichte der Ereignisse verzichtet.
+Der Random Forest wird ebenfalls ungewichtet trainiert, er erhält durch Gewichtung keine höhere Trennkraft.
+In der anschließenden Betrachtung der Qualitätsparameter und Konfidenzverteilungen werden die Gewichte beim Erstellen der Grafiken und Berechnen der Raten beachtet. 
+So wird die Übertragbarkeit auf experimentelle Daten sichergestellt.
+Schließlich werden die Separationsqualitäten und Eigenschaften der Signalereignisverteilungen der beiden Vetos verglichen.
+
+In dieser Analyse wird von Signal- und Untergrundereignissen, die nach einer Separation vorhanden sind, geschrieben.
+Diese Einteilung ist nur auf Simulationsdaten möglich, auf experimentellen Daten sind nur \emph{Ereigniskandidaten} für Signal und Untergrund bekannt.
+
+
+
+\section{Neutrinoselektion}
+\label{neutrinoselektion}
+Im ersten Separationsschritt wird das Signal in Form von beiden in den Datensätzen vorhandenen Neutrinoflavours vom Myon-Untergrund getrennt.
+Unterschieden wird dabei im wesentlichen die unterschiedliche Topologie der Ereignistypen.
+Das Signal besteht aus einer gleichen Anzahl von simulierten Elektron- wie Myon-Neutrinos.
+Diese Vorseparation sorgt für eine bessere Trennung als eine Separation mit drei Klassen oder eine direkte Separation der Myon-Neutrinos vom gesamten Untergrund.
+
+
+
+\subsection{Selektion}
+\label{neutrinomrmr}
+Die Attributsselektion wird, wie in Abschnitt~\ref{theo:mrmr} beschrieben, mittels mRMRe in R~\cite{R} durchgeführt. 
+Dabei wird eine gleiche Anzahl von simulierten Untergrund- wie Signalereignissen verwendet, was bedingt durch die Menge an vorhandenen \texttt{CORSIKA} Daten zu einer Beschränkung auf insgesamt $\num{52000}$ Ereignisse führt. 
+Um die Stabilität der Selektion zu bestimmen werden durch Ziehen mit Zurücklegen fünf Datensätze gezogen, auf denen je ein Mal selektiert wird.
+Die fünf Stabilitätsverteilungen sind gemittelt in~\ref{fig:mrmrnuvsmu} dargestellt.
+
+Es sind keine großen Ausreißer zu sehen und mit zunehmender Zahl an selektierten Attributen $k$ scheint die Stabilität mit $\num{0.95}$ in eine Sättigung über zu gehen.
+Die Standardabweichung der Jaccard-Indices sinkt mit größer werdendem $k$ und bleibt ab $k=42$ etwa konstant.
+Es ist zu beachten, dass die Punkte für $k=1,2,3$ eine Standardabweichung vom Mittelwert von Null haben.
+Bei $k=1$ wird für jede Selektion ein anderes Attribut ausgewählt, es gibt also kein bestes Attribut.
+Für die folgende Separation werden 44 Attribute verwendet.
+Bei dieser Attributszahl ist die Standardabweichung der Stabilität fast minimal und ihr Mittelwert nahe am Maximum.
+Für die endgültige Attributswahl wird aus den Attributsmengen aus dem Stabilitätstest ein einziger Satz an Attributen generiert.
+Dafür werden für jedes Attribut dessen Ränge aus den Selektionen addiert und nach diesen summierten Rangwerten sortiert. 
+Es werden nur die $k$ (hier 44) höchsten Attribute weiter verwendet.
+
+
+
+
+\begin{figure}
+\begin{center}
+    \includegraphics{mrmr/corsika.pdf}
+\end{center}
+\vspace{-2em}
+\caption{Aufgetragen sind die gemittelten Jaccard-Indices mit ihren Standardabweichungen gegen die Anzahl an selektierten Attributen.}
+\label{fig:mrmrnuvsmu}
+\end{figure}
+
+
+\subsection{Separation}
+\label{neutrinoseparation}
+In diesem Schritt werden die Neutrinos beider vorhandener Flavour von Myonen separiert.  
+Es wird eine Separation für jede Vetoregion durchgeführt, wobei nur Ereignisse verwendet werden, die das jeweilige Veto passiert haben.
+Beide Separationen laufen gleich ab, vollständig beschrieben wird nur die des DC-Vetos.
+Die Konfidenzverteilungen und Qualitätsparameter der EXT-Separation sind im Anhang~\ref{extvetoAnhang} zu finden, da sie analog durchgeführt werden.
+Verwendet wird der WEKA Random Forest \cite{Weka2009} in RapidMiner~\cite{RapidMiner}.
+%Als Optimierungskriterium dient der Information Gain.
+Um die Rechenzeit zu begrenzen wird jeder Forest aus 50 Bäumen aufgebaut.
+Für die Größe $N$ der Attributsmenge jedes Baums wird $N = \mathrm{int}(\log (k) +1 )$ gewählt~\cite{RandomForest}.
+Mit der Gesamtzahl an Attributen $k$ aus der mRMRe Selektion.
+Es werden alle $\num{26000}$ vorhandenen \texttt{CORSIKA} Untergrundereignisse verwendet und je $\num{250000}$ Ereignisse pro verwendetem Neutrinoflavour.
+Für Neutrinozahlen unter $\num{100000}$ ordnet der Random Forest jedes Ereignis als Untergrund ein.
+Es ist anzunehmen, dass die Separationsqualität durch die geringe Menge an Untergrundereignissen begrenzt wird.
+Um eine Abschätzung der Separationsqualität und ihrer Schwankung auf ungesehenen Daten zu erhalten, wird eine fünffache Kreuzvalidierung durchgeführt.
+Da dabei nicht alle Ereignisse Verwendung finden und das Signal zu Untergrund Verhältnis beim Trainieren nicht dem realen entspricht, werden die jeweiligen Raten durch den jeweils verwendeten Anteil geteilt, um die real zu erwartenden Raten zu erhalten. 
+
+
+In Abbildung~\ref{fig:confidencenuvsmuDC} sind die Ereignisraten für die Konfidenz, dass ein Ereignis zum Signal gehört, dargestellt.
+Sie zeigt ein starkes Überlappen der beiden Verteilungen und damit eine niedrige Trennkraft.
+Für Myonen hat die Rate ihr Maximum bei niedrigen Konfidenzwerten um $\num{0.1}$.
+Die Neutrinoraten haben ihr Maximum im selben Bereich. 
+Von dort bis zur Konfidenz 0.8 sinken sie auf ein Viertel ihres Maximums, danach fallen sie um mehrere Größenordnungen ab.
+Ein Großteil der Neutrinos ist also für den Lerner nicht von Myonen zu unterscheiden.
+Die Ausreißer der Myonen mit Konfidenzen größer 0.6 entsprechen jeweils einem klassifizierten Ereignis. 
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/DCconfhistNu}
+\end{center}
+\vspace{-2em}
+\caption{Histogramme der Konfidenzverteilungen der gemittelten Ereignisraten von Myonen (Untergrund) und Neutrinos (Signal) in Hertz. Die Standardabweichungen aus der fünffachen Kreuzvalidierung sind als Fehlerbalken dargestellt. Der verwendete Konfidenzschnitt ist als vertikale Linie bei 0.9 eingezeichnet.}
+\label{fig:confidencenuvsmuDC}
+\end{figure}
+
+In Abbildung~\ref{fig:qualitynuvsmuDC} sind die gemittelten Reinheiten und Effizienzen aus der Kreuzvalidierung dargestellt.
+Bei einer Konfidenz von 1.0 ist für die Reinheit kein Wert vorhanden, es kommt hier zu einem Rundungsfehler und damit zu einem NaN-Wert.
+Die Reinheiten zeigen für den Übergangsbereich zwischen den Konfidenzen 0.3 und 0.9 hohe Standardabweichungen von ihren Mittelwerten.
+Grund für die vermeintlich perfekte Reinheit von 1.0 für Konfidenzen größer 0.9 ist die geringe Statistik des Myondatensatzes.
+Bei einer größeren Anzahl an Myonereignissen ist zu erwarten, dass die Konfidenzverteilung der Myonen stetiger wird und für höhere Konfidenzwerte mehr Myonen auftauchen.
+Über einer Konfidenz von 0.9 werden die Effizienzen kleiner als 1\%.
+Als Konfidenzschnitt für die weitere Analyse wird der Wert 0.9 genommen.
+Dies ist der niedrigste Wert für den keine Untergrundereignisse mehr vorhanden sind, womit die Reinheit maximiert wird und als Nebenbedingung die Effizienz maximiert wird.
+Beim EXT-Veto sind Myonereignisse nur bis zu einer Konfidenz von 0.84 vorhanden. 
+Um den Vergleich einheitlicher zu machen wird dort der selbe Konfidenzschnitt bei 0.9 angesetzt.
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/DCqualityNu}
+\end{center}
+\vspace{-2em}
+\caption{Aufgetragen sind die gemittelten Qualitätsparameter Reinheit (rot) und Effizienz (blau) mit ihren Standardabweichungen gegen die Konfidenz.}
+\label{fig:qualitynuvsmuDC}
+\end{figure}
+
+
+
+\section{Myon-Neutrinoselektion}
+\label{myonselektion}
+In dieser Selektion sind Myon-Neutrinos das Signal und Elektron-Neutrinos der Untergrund.
+Von beiden Teilchensorten werden nur solche Ereignisse verwendet, die nach der Neutrinoseparation übrig geblieben sind.
+
+
+
+\subsection{Selektion}
+\label{myonmrmr}
+Das Vorgehen ist gleich dem der Selektion in~\ref{neutrinomrmr}, es wird nur eine größere Zahl von $\num{500000}$ Ereignissen verwendet.
+
+Die Stabilitätsverteilung der Attributsselektion ist in~\ref{fig:mrmrnuevsnumu} dargestellt.
+Sie zeigt im Vergleich zur vorherigen Stabilitätsverteilung größere Schwankungen.
+Die Standardabweichungen der gemittelten Stabilitäten sind im Vergleich zur vorherigen Selektion größer.
+Ab $k\sim 23$ werden die Standardabweichungen im Vergleich zu niedrigeren $k$-Werten kleiner und finden bis auf einige Ausreißer in den höchsten $k$-Werten ihr Minimum um $k=36$.
+Bei $k = 1$ ist die Stabilität konstant Eins, es gibt also ein bestes Attribut.
+Nach $k=1$ findet ein Abfallen statt, worauf bei $k=6$ ein Anstieg folgt, der erste Sättigung bei $k=23$ zeigt, und ein lokales Maximum um $k=36$.
+Bei $k>41$ findet wieder eine Sättigung statt, die nahe an eine Stabilität von 1 kommt. 
+Für die anschließende Separation werden 36 Attribute verwendet.
+Hier haben Stabilität und ihre Standardabweichung ein lokales Maximum bzw. Minimum, das gleich oder nahe dem globalen ist.
+
+\begin{figure}
+\begin{center}
+    \includegraphics{mrmr/nuenumu.pdf}
+\end{center}
+\vspace{-2em}
+\caption{Aufgetragen sind die gemittelten Jaccard-Indices mit ihren Standardabweichungen gegen die Anzahl an selektierten Attributen.}
+\label{fig:mrmrnuevsnumu}
+\end{figure}
+
+
+
+
+\subsection{Separation}
+\label{myonseparation}
+Die Separation läuft analog zur Neutrinoseparation.
+Nachdem alle Myonereignisse durch die Neutrinoseparation entfernt wurden, werden jetzt Myon-Neutrinos (Signal) von Elektron-Neutrinos (Untergrund) getrennt.
+Für das Trainieren des Lerners stehen beim DC-Veto $\num{54077}$ und beim EXT-Veto $\num{10716}$ Ereignisse zur Verfügung, was die erreichbare Separationsqualität einschränkt.
+
+Die gemittelten Konfidenzverteilungen mit ihren Standardabweichungen aus der fünffachen Kreuzvalidierung sind in Abbildung~\ref{fig:confidencenuevsnumu} dargestellt.
+Die Signal- und Untergrund-Verteilungen überlappen sich stark, mit Maxima um einer Konfidenz von 0.7.
+Für Konfidenzen kleiner 0.4 ist die Untergrundrate höher als die Signalrate, wobei die Abweichungen teilweise innerhalb einer Standardabweichung der Mittelwerte liegt.
+Für Konfidenzen größer 0.6 ist die Signalrate um mehrere ihrer Standardabweichungen höher als die Untergrundrate.
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/DCconfhistNUENUMU}
+\end{center}
+\vspace{-2em}
+\caption{Histogramme der Konfidenzverteilungen der gemittelten Ereignisraten von Elektron-Neutrinos (Untergrund) und Myon-Neutrinos (Signal) in Hertz. Die Standardabweichungen aus der fünffachen Kreuzvalidierung sind als Fehlerbalken dargestellt. Ereignisse mit Konfidenzen unter 0.2 sind nicht vorhanden.}
+\label{fig:confidencenuevsnumu}
+\end{figure}
+
+In Abbildung~\ref{fig:qualitynuevsnumu} sind die gemittelten Reinheiten und Effizienzen mit ihren Standardabweichungen aus der Kreuzvalidierung dargestellt.
+Für Konfidenzen unter 0.5 ist bei der Reinheit das nach der Neutrinoseparation vorhandene Signal zu Untergrund Verhältnis von etwa 7:4 zu sehen, worüber hinaus noch keine Trennung erfolgt.
+Ab Konfidenzen von 0.6 steigt die Reinheit an, verbunden mit einem steileren Abfallen der Effizienz.
+Soll eine Reinheit von 99\% erreicht werden müssen 98\% der Signalereignisse verworfen werden.
+Der Konfidenzschnitt wird bei 0.84 angesetzt. 
+Hier hat das DC-Veto eine Reinheit von $\SI{95.3(8)}{\%}$ und eine Effizienz von $\SI{10.9(3)}{\%}$ 
+\begin{figure}
+\begin{center}
+    \includegraphics{separation/DCqualityNUENUMU}
+\end{center}
+\vspace{-2em}
+\caption{Aufgetragen sind die gemittelten Qualitätsparameter Reinheit (rot) und Effizienz (blau) mit ihren Standardabweichungen gegen die Konfidenz.}
+\label{fig:qualitynuevsnumu}
+\end{figure}
+
+
+
+\section{Vergleich der Vetoregionen}
+\label{vergleich}
+
+Verglichen werden die Separationen aus den Abschnitten~\ref{neutrinoseparation} und~\ref{myonseparation}.
+Betrachtet werden die Ereignisraten im Vergleich zur Konfidenz und der Zusammenhang der rekonstruierten Energie mit der wahren Energie der Ereignisse.
+Als rekonstruierte Energie wird der Wert des Attributs \texttt{MPEFitMuEX} verwendet.
+Es berechnet die Energie der Ereignisse über den Energieverlust $\mathrm{d}E/\mathrm{d}x$ der Myonen.
+Es ist in allen Separationen als Attribut vorhanden und hat nach dem Konfidenzschnitt von 0.9 in der Neutrinoselektion einen NaN-Anteil von 2\%. 
+Diese NaN-Ereignisse werden im Vergleich der Energien nicht verwendet.
+Die im Folgenden betrachteten relativen Ratendifferenzen $\mathrm{Δ}$ sind definiert über:
+\begin{equation}
+    \mathrm{Δ} := \frac{r_\text{DC}-r_\text{EXT}}{r_\text{DC}}
+\end{equation}
+Mit den Ereignisraten $r$ für das jeweilige Veto.
+
+
+\subsection{Neutrinoselektion}
+
+Abbildung~\ref{fig:confDiffSig} zeigt die $\mathrm{Δ}$ von DC- und EXT-Veto für Werte der wahren Energie und Konfidenz aus der Neutrinoselektion. 
+Es ist zu sehen, dass die Raten des EXT-Vetos für Konfidenzen unter 0.4 größer als die des DC-Vetos sind.
+Die dort höheren Raten sind jedoch ohne Nutzen, da in der Myon-Neutrinoseparation nur Ereignisse mit einer Konfidenz größer 0.9 verwendet werden.
+Bei Konfidenzen größer 0.6 verfügt das DC-Veto über höhere Ereignisraten, während sich zu 0.5 hin von beiden Seiten die Raten angleichen.
+Diese Eigenschaften der Verteilung treten in jedem Energiebereich auf, wobei der Betrag der $\mathrm{Δ}$ mit steigender Energie zunimmt.
+Für Energien größer $\SI{500}{GeV}$ und Konfidenzen größer 0.9 kommt es zu ungefüllten Bins; es sind zu wenig Ereignisse vorhanden um den gesamten Parameterraum abzudecken.
+\begin{figure}
+\begin{center}
+    \includegraphics{/comparison/rates/confSigDiffNu}
+\end{center}
+\vspace{-2em}
+\caption{Aufgetragen ist wahre Energie gegen Konfidenz für alle Neutrinoereignisse. Die relativen Differenzen der Ereignisraten von DC- und EXT-Vetos sind farblich kodiert.}
+\label{fig:confDiffSig}
+\end{figure}
+
+In Abbildung~\ref{fig:eDiff} sind die $\mathrm{Δ}$  gegen rekonstruierte und wahre Energie nach dem Konfidenzschnitt bei 0.9 zu sehen.
+Wahre Energien größer $\SI{200}{GeV}$ und rekonstruierte Energien größer $\SI{800}{GeV}$ werden nicht betrachtet, da dort insgesamt maximale Raten von nur etwa $\SI{0.02}{µHz}$ vorhanden sind.
+Von vier Bins abgesehen, zeigt das DC-Veto in jedem Energiebereich höhere Raten.
+\begin{figure}
+\begin{center}
+    \includegraphics{/comparison/rates/eSigDiffNu}
+\end{center}
+\vspace{-2em}
+    \caption{Aufgetragen ist wahre Energie gegen rekonstruierte Energie nach dem Konfidenzschnitt bei 0.9. Die $\mathrm{Δ}$ von DC- und EXT-Vetos sind farblich kodiert.}
+\label{fig:eDiff}
+\end{figure}
+
+Abbildung~\ref{fig:eNUDC} zeigt die in Abbildung~\ref{fig:eDiff} zu Grunde liegenden absoluten Raten für das DC-Veto.
+Um die Korrelation von rekonstruierter und wahrer Energie über alle Energiebreiche sichtbarer zu machen wurden die Raten um den spektralen Index $\gamma= 2.7$ korrigiert.
+Dazu wird jedes Ereignis auf $w_\text{neu} = w_\text{alt}E_\text{wahr}^\gamma$ neu gewichtet.
+Die schwarz gestrichelte Linie mit Steigung Eins zeigt den für eine perfekte Energierekonstruktion zu erwartende Häufungszone der Raten.
+Unter ihr befindet sich nur ein Anteil von weniger als 1\% der Gesamtrate.
+Die rekonstruierten Energien werden also kaum unterschätzt.
+Die Häufungszone der Raten ist stark über die Linie verschoben, die Energien werden im Durchschnitt um das Achtfache überschätzt.
+Die mit $w_\text{alt}$ gewichtete Pearson-Korrelation zwischen den rekonstruierten und wahren Energien ergibt sich zu $\rho_\text{DC} = 0.70$.
+Wird die Korrelation mit $w_\text{neu}$ gewichtet, ergibt sich $\rho _\text{DC,neu} = 0.76$. 
+Die Korrektur verstärkt die Korrelation anstatt nur die Energiebereiche vergleichbarer zu machen.
+Beim EXT-Veto (Abbildung~\ref{fig:eNUEXT}) besteht mit $\rho_\text{EXT} = 0.67$ eine niedrigere Korrelation.
+\begin{figure}
+\begin{center}
+    \includegraphics{/comparison/rates/eSigDcNu}
+\end{center}
+\vspace{-2em}
+    \caption{Aufgetragen ist wahre Energie gegen rekonstruierte Energie nach dem Konfidenzschnitt bei 0.9 für die Neutrinoselektion mit dem DC-Veto. Die absoluten Ereignisraten sind farblich kodiert.}
+\label{fig:eNUDC}
+\end{figure}
+
+
+
+\subsection{Myon-Neutrinoselektion}
+
+In Abbildung~\ref{fig:confDiffFinalSig} sind die $\mathrm{Δ}$ von DC- und EXT-Veto für Werte der wahren Energie und Konfidenz dargestellt.
+Verwendet werden nur Signalereigniskandidaten nach Anwenden der Random Forests aus der Myon-Neutrinoselektion.
+
+Für die Konfidenzen werden die Klassifikationen der Random Forests aus der Kreuzvalidierung der Myon-Neutrinoselektion verwendet.
+Jeder Random Forest klassifiziert dabei nur Ereignisse, die er noch nicht gesehen hat.
+Anwenden eines einzigen Forests auf alle Ereignisse ist ohne Einführung eines Bias in den Ergebnissen nicht möglich, da jeder Forest auf $\tfrac45$ der vorhandenen Daten trainiert wurde.  
+Die Raten des DC-Vetos dominieren bis auf vereinzelte Ausnahmen in jedem Energie- und Konfidenzbereich.
+\begin{figure}
+\begin{center}
+    \includegraphics{/comparison/rates/confSigDiffFinal}
+\end{center}
+\vspace{-2em}
+    \caption{Aufgetragen ist wahre Energie gegen Konfidenz. Die $\mathrm{Δ}$ von DC- und EXT-Vetos sind farblich kodiert.}
+\label{fig:confDiffFinalSig}
+\end{figure}
+Gleiches zeigt sich bei den Raten gegen rekonstruierte und wahre Energie in Abbildung~\ref{fig:eDiffFinalSig}.
+Hier werden alle Signalereigniskandidaten nach dem Konfidenzschnitt bei 0.84 verwendet.
+Die Korrelationen zwischen rekonstruierten und wahren Energien sind $ρ _\text{DC}= 0.67$ und $ρ_\text{EXT} = 0.63$.  
+Sie sind im Vergleich zur Neutrinoselektion gesunken.
+\begin{figure}
+\begin{center}
+    \includegraphics{/comparison/rates/eDiffFinalSig}
+\end{center}
+\vspace{-2em}
+    \caption{Aufgetragen ist wahre Energie gegen rekonstruierte Energie. Die $\mathrm{Δ}$ von DC- und EXT-Veto sind farblich kodiert.}
+\label{fig:eDiffFinalSig}
+\end{figure}
+
+
+Tabelle~\ref{tab:neutrinoseparation-raten} fasst die Myon-Neutrino-Raten nach den Schritten der Analyse noch einmal zusammen.
+Zum Nachteil des EXT-Vetos wurde in der Neutrinoseparation der Konfidenzschnitt für beide Vetos bei 0.9 angesetzt, obwohl beim EXT-Veto Untergrundereignisse nur bis zu einer Konfidenz von 0.84 zu finden sind.
+Wird für das EXT-Veto der Schnitt bei 0.84 angesetzt, bleibt eine Neutrinoereignisrate von $\SI{28.43}{µHz}$ übrig.
+Die höhere Rate vor der ersten Separation beim EXT-Veto sorgt in diesem Fall für keine höheren Raten nach der Separation.
+\begin{table}
+    \centering
+    \caption{Die Ereignisraten und -zahlen an Myon-Neutrinos nach den einzelnen Separationsschritten für DC- und EXT-Veto.}
+    \label{tab:neutrinoseparation-raten}
+    \begin{tabular}{S S[table-format=7.0] S[table-format=7.0]  S[table-format=4.1]  S[table-format=4.1] }
+        \toprule
+         & \multicolumn{2}{c}{Ereigniszahlen} & \multicolumn{2}{c}{Ereignisraten / µHz} \\
+        %{} &
+         & \(\text{DC}\) & \(\text{EXT}\) & $\text{DC}$ & $\text{EXT}$ \\
+        \midrule
+        $\text{Veto Filter}$ &3401258 &4389350 &2995.6 &3889.9 \\
+        $\text{Neutrinoselektion}$ & 35279 &7188 & 30.4 & 6.2 \\
+        $\text{Myon-Neutrinoselektion}$ & 6013 &2191 & 4.1 & 1.5  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+

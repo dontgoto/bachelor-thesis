@@ -1,0 +1,203 @@
+
+\sisetup{range-phrase=-}
+
+
+
+\chapter{Grundlagen}
+In den folgenden Abschnitten werden die Grundlagen der Astroteilchenphysik, der kosmischen Strahlung, der Neutrinointeraktionen, des IceCube Detektors und der untersuchten Vetos beschrieben. 
+Außerdem werden die in der Analyse verwendeten Verfahren des maschinellen Lernens dargelegt.
+
+\section{Astroteilchenphysik}\label{astro}
+Die Astroteilchenphysik beschäftigt sich unter anderem mit der Untersuchung von kosmischer Strahlung (CR).
+Als Quellen der CRs werden Objekte wie Aktive Galaktische Kerne oder Gammablitze angenommen.
+Das Verhalten dieser Quellen kann anhand der Eigenschaften ihrer ausgesandten CRs bestimmt werden.
+In ihnen wird beispielsweise durch Akkretion von Materie potentielle Gravitationsenergie, und über Drehimpulserhaltung auch Rotationsenergie, in kinetische Energie der CRs umgewandelt. 
+Ein Ansatz für die Produktion der CRs ist die Fermibeschleunigung, die durch Schocks mit interstellarer Materie Teilchen beschleunigt.
+Diese Art der Beschleunigung sorgt für einen CR Fluss der Form $Φ = \mathrm{d}N / \mathrm{d}E $.
+Dieser folgt einem Potenzgesetz der Form $Φ \propto E^{-γ}$ \cite{FermiAcc}, mit der Teilchenenergie $E$ und dem spektralen Index $γ$.
+Die CRs können in drei Kategorien eingeteilt werden: Photonen, ungeladene Teilchen und geladene Teilchen.
+Photonen zeigen direkt auf ihre Quelle.
+Sie werden von Objekten wie Gaswolken und durch Wechselwirkung mit Sternenlicht unter Paarproduktion von Elektronen absorbiert, was einen Nachweis erschwert.
+Ungeladene Teilchen, wie Neutrinos oder Neutronen, werden ebenfalls nicht abgelenkt. 
+Geladene Teilchen, wie Protonen, Elektronen oder Pionen, werden durch Magnetfelder, deren Stärke und räumliche Verteilung im Allgemeinen nicht bekannt ist, abgelenkt. 
+Sie werden außerdem mit einer hohen Wahrscheinlichkeit von Materie absorbiert. 
+Dadurch wird für sie sowohl der Nachweis als auch die Rekonstruktion der Quellposition erschwert.
+Die Hauptbestandteile der geladenen CRs sind Protonen und Heliumkerne mit Anteilen von 90\% und 9\%~\cite{gaisser2016cosmic}.
+\cite{highenergyastro} 
+
+Gelangen die Protonen bis zur Erde, können sie mit Atomkernen $N$ in der Atmosphäre interagieren und Mesonen, sowie weitere Interaktionsprodukte $X$ erzeugen:
+\begin{equation}
+    \label{proton-interaktion}
+    \mathrm{p} + N \to
+    \begin{cases}
+        \mathrm{π}^± + X\\
+        \mathrm{K}^± + X
+    \end{cases}
+\end{equation}
+Die Pionen und Kaonen zerfallen wiederum über:
+\begin{align}
+    \mathrm{π}^\pm & \to  \mathrm{µ}^\pm + \mathrm{ν}_\mathrm{μ} (\overline{\mathrm{ν}}_\mathrm{μ}) \; \; (\sim 100\%)
+    \label{pionzerfall} \\
+    \mathrm{K}^\pm  & \to  \mathrm{µ}^\pm + \mathrm{ν}_\mathrm{μ} (\overline{\mathrm{ν}}_\mathrm{μ})\; \; (\sim 63.5\%)
+    \label{kaonzerfall} \\
+    &  \quad \; \, \, \mathrm{μ}^\pm  \to  \mathrm{e}^± + \mathrm{ν}_\mathrm{e}(\overline{\mathrm{ν}}_\mathrm{e}) +  \overline{\mathrm{ν}}_\mathrm{μ}(\mathrm{ν}_\mathrm{μ})
+    \label{muonzerfall}
+\end{align}
+Produkte solcher Interaktionen in der Atmosphäre werden auch \emph{atmosphärisch} genannt. 
+Wird von atmosphärischen Teilchen gesprochen, bezieht sich dies auf Interaktionsprodukte, die in der Atmosphäre entstehen.
+Mit ihnen sind Rückschlüsse auf die Eigenschaften der primären CR möglich.
+Die Neutrinos aus den Reaktionen~\eqref{pionzerfall} bis~\eqref{muonzerfall} haben durchschnittlich eine etwa gleich große kinetische Energie, die etwa einem Zehntel der Energie des Protons entspricht.
+Für die im Folgenden betrachteten atmosphärischen Neutrinos im Energiebereich von $\SIrange{100}{1000}{GeV}$ wird ein Spektrum mit $γ = 2.67$ erwartet.
+\cite{pdg2014, WiebelSoothBiermannMeyer, gaisser2016cosmic}
+
+Neutrinos interagieren nur über die schwache Wechselwirkung, womit sie nicht auf direktem Weg nachgewiesen werden können. 
+Werden bei solch einer Interaktion geladene Leptonen erzeugt, ist es möglich diese über ihr Tscherenkowlicht in einem transparenten Medium nachzuweisen.
+Damit dieses Licht erzeugt werden kann, müssen sich die Sekundärteilchen mit einer Geschwindigkeit größer der Lichtgeschwindigkeit im Medium bewegen.
+Der für diesen Prozess wichtigste Reaktionstyp läuft über den geladenen Strom (CC) der schwachen Wechselwirkung ab. 
+\begin{equation}
+    \nu _\ell (\overline{\nu} _\ell ) + N  \to \ell ^- (\ell ^+)+ X \qquad (\text{CC})
+    \label{cc}
+\end{equation}
+Hierbei interagiert ein Neutrino $ν$ des Flavours $\ell$ mit einem Atomkern $N$ zu einem Lepton $\ell$ des gleichen Flavours und einer hadronisierten Kaskade $X$.
+Die Anzahl so interagierender Neutrinos pro Jahr wird für einen $\SI{1}{km^3}$ großen Detektor wie IceCube im Energiebereich von $\SIrange{1}{1000}{GeV}$ auf über $\num{100000}$ geschätzt.
+
+
+\section{IceCube}
+IceCube \cite{icecube-detector-reference} ist ein Teleskop für hochenergetische Neutrinos am geografischen Südpol.
+Es besteht aus dem auf antarktischen Eis gelegenem IceTop und dem im Eis eingelassenen IceCube In-Ice Array.
+IceTop wird unter anderem als Veto für atmosphärische Myonen verwendet, Details dazu sind in~\cite{icetop-reference} zu finden.
+Das IceCube In-Ice Array besteht aus 80 so genannten Strings, an denen insgesamt 4800 Digitale Optische Module (DOMs) angebracht sind.
+Die Strings sind mit einem mittleren Abstand von $\SI{125}{m}$ untereinander in das Eis eingeschmolzen.
+Die gleichmäßig auf jedem String verteilten DOMs befinden sich in einer Tiefe von $\SI{1450}{m}$ bis $\SI{2450}{m}$ und dienen als Detektoren von Tscherenkowlicht.
+Es werden also nur von Neutrinos oder anderen Teilchen induzierte Ereignisse gemessen. 
+Diese werden im Folgenden nur Neutrinos, Neutrinoereignisse, etc. genannt.
+Die Detektion geschieht durch eine Photomultiplierröhre, dessen Ausgang mit einem Data Acquisition Board verbunden ist, das die gemessenen Spannungspulse zum IceCube-Labor an der Oberfläche weiterleitet.
+Die Konstruktion ist von einer Glaskugel umgeben und wird so vor dem Druck des Eises geschützt.
+Näheres zu den DOMs ist in \cite{dom-paper} zu finden.
+
+\subsection*{DeepCore}
+DeepCore (DC) ist ein dichter instrumentiertes Teilarray von IceCube, das zur Detektion von niederenergetischen Neutrinos verwendet wird.
+DC besteht aus der innersten Stringschicht des In-Ice-Arrays sowie sechs weiteren DC-Strings, die zusammen einen mittleren Abstand von nur $\SI{72}{m}$ haben. 
+Die genaue String-Konfiguration ist in Abbildung~\ref{fig:icecube} dargestellt.
+Die DC-Strings sind mit HQE-DOMs, die eine höhere Quanteneffizienz als die im restlichen Array verwendeten DOMs haben, ausgestattet. 
+Der DOM-zu-DOM-Abstand an einem String liegt zwischen \SI{7}{m} und \SI{10}{m}, wobei im Bereich der Staubschicht von $\SI{-2000}{m}$ bis $\SI{-2100}{m}$ keine DOMs liegen.
+Die Anzahl an DOMs pro Volumen ist in DC etwa fünf mal so hoch wie im IceCube In-Ice Array.
+All dies sorgt dafür, dass in DC bei $\SI{10}{GeV}$ Teilchenenergie bereits etwa zehn DOMs ansprechen und die optimale Detektionsenergie im Bereich von $\SIrange{10}{100}{GeV}$ liegt.
+Weitere Informationen sind in \cite{deepcore-reference} zu finden.
+\begin{figure}
+\begin{center}
+    \includegraphics[width=0.70\textwidth]{IC86legendShift}
+\end{center}
+\vspace{-2em}
+\caption{Eine Seitenansicht der String- und DOM-Konfiguration des IceCube-Detektors. Der herkömmliche DeepCore Bereich ist grün unterlegt. Weiter gekennzeichnet sind die HQE-DOMs und die Lage der Staubschicht.}
+\label{fig:icecube}
+\end{figure}
+
+
+
+\subsection*{Vetoregionen}
+Um bei Messungen von -- für IceCube -- niederenergetischen Neutrinos im Energiebereich von $\SIrange{10}{100}{GeV}$ eine ausreichende Energieauflösung zu erreichen, wird ein Detektor mit einer durchschnittlich höheren DOM-Dichte als im IceCube In-Ice Array benötigt.
+Deswegen sollte für solche Ereignisse nicht das ganze IceCube-Array zur Detektion benutzt werden, sondern nur DeepCore und gegebenenfalls noch eine begrenzte Anzahl an umliegenden String-Schichten.
+Die ungenutzten Strings können als Vetoregion genutzt werden, um das hohe Neutrino zu Myon Verhältnis von $1$:$10^6$ zu verringern.
+Für das Veto werden Ereignisse betrachtet, die innerhalb DeepCores und somit außerhalb der Vetoregion starten.
+Beim Filtern von Ereignissen durch ein Veto werden verschiedene Kriterien berechnet. 
+Wird eines der Hauptkriterien oder eine gewisse Kombination von Nebenkriterien erfüllt, wird ein Ereignis vom Veto verworfen.
+Für die übrig bleibenden Ereignisse liegt die Wahrscheinlichkeit sehr hoch, dass sie im zum Veto gehörenden Detektionsvolumen gestartet sind.
+Eines der Hauptkriterien ist die Geschwindigkeit des Ereignisses.
+Berechnet wird sie aus der Distanz und vergangenen Zeit zwischen Startpunkt und dem Ladungsschwerpunkt des Ereignisses.
+Ist sie im Bereich der Lichtgeschwindigkeit wird das Kriterium erfüllt und das Ereignis verworfen. 
+Näheres dazu ist in~\cite{lowe-filter} zu finden.
+
+In Abbildung~\ref{fig:vetolayer} sind die Bereichsdefinitionen der in dieser Arbeit betrachteten Vetos dargestellt.
+Beim sogenannten DC-Veto wird das DC Array und eine zusätzliche Schicht an Strings zum Detektionsvolumen gezählt.
+Das Detektionsvolumen des EXT-Vetos besteht aus dem DC-Array und zwei weiteren Schichten an Strings.
+\begin{figure}
+\begin{center}
+    \includegraphics[width=0.88\textwidth]{vetolayer}
+\end{center}
+\vspace{-2em}
+\caption{Eine Draufsicht der IceCube String-Konfiguration. Das DC-Detektionsvolumen ist blau unterlegt. Rot unterlegt ist das erweiterte Detektionsvolumen des EXT-Vetos. Strings außerhalb des Detektionsvolumens zählen zur Vetoregion.}
+\label{fig:vetolayer}
+\end{figure}
+
+\section{Maschinelles Lernen}
+Die detektierten Ereignisse sind anfangs noch ungetrennt. 
+Um beispielsweise die Energiespektren der verschiedenen Teilchensorten zu bestimmen ist jeweils ein hoch reines Sample erforderlich.
+Deshalb müssen die Ereignisse voneinander getrennt werden.
+Die Trennung der Ereignisse in die beiden Klassen Signal und Untergrund ist durch hohe Datenraten von mehr als $\SI{100}{GB}$ pro Tag per Hand unmöglich.
+Abhilfe schaffen Methoden des maschinellen Lernens. 
+Beim maschinellen Lernen wird ein Algorithmus, weiter Lerner genannt, auf die Daten angewendet. 
+Als Eingabe bekommt der Lerner einen Datensatz aus Ereignissen mit Attributen, die diese Ereignisse charakterisieren. 
+Durch Veränderung von Modellparametern, die das Verhalten des Lerners bestimmen, löst dieser ein Optimierungsproblem; er wird auf den Daten trainiert.
+Haben die Eingabedaten die zusätzliche Information der Klassenzugehörigkeit, auch Label genannt, fällt das Verfahren in die Kategorie des überwachten Lernens. 
+In der später durchgeführten Analyse werden hierfür Simulationsdaten benutzt.
+Der so trainierte Lerner kann eingesetzt werden, um für Daten des selben Typs eine Vorhersage über ihre Klassenzugehörigkeit zu treffen.
+Dieser Schritt wird auch Separation genannt. 
+Die in diesem Fall zu trennenden Ereignisse fallen in zwei Kategorien: Weiter als Signal und Untergrund bezeichnet.
+Es gibt auch multiklassen Probleme.
+\cite{Aggarwal15}
+
+\subsection*{Attributsselektion mittels mRMR}
+\label{theo:mrmr}
+Eine Attributsselektion kann hilfreich sein, um den Rechenaufwand des in der Separation verwendeten Lerners zu verringern.
+Dafür kann beispielsweise ein Algorithmus namens Minimum Redundancy Maximum Relevance (mRMR) verwendet werden.
+Dieser basiert auf der gegenseitigen Information ($\text{MI}$) der Attribute untereinander, die aus den unabhängigen Wahrscheinlichkeitsdichten $p(x)$ und $p(y)$, sowie der gegenseitigen Dichte $p(x,y)$ über
+\begin{equation}
+    \text{MI}(x,y) = \iint p(x,y) \log \frac{p(x,y)}{p(x)p(y)} \mathup{d}x\mathup{d}y 
+    \label{mututal information}
+\end{equation}
+berechnet wird. $x$ und $y$ sind Ausprägungen beliebiger Attribute $X$ und $Y$.
+Mit der $\text{MI}$ lassen sich die Parameter Relevanz $D$ und Redundanz $R$ berechnen.
+Die Relevanz eines Attributs ergibt sich aus der $\text{MI}$ des Attributs mit dem Zielattribut. 
+Die Redundanz eines Attributs ergibt sich aus der $\text{MI}$ des Attributs und allen anderen Attributen.
+Die für kontinuierliche Daten notwendigen Anpassungen von $\text{MI}$, $D$ und $R$ sind in \cite{mrmrNumerisch} dargelegt.
+Die nach der Selektion übrig bleibende Menge von $k$ Attributen wird über Maximierung eines Optimierungskriteriums $Φ(R,S)$ gefunden.
+Für $Φ$ wird meist die Differenz der gegenseitigen Information (MID) $Φ = D-R$, oder der Quotient der gegenseitigen Information (MIQ) $Φ = D/R $ verwendet.
+
+Das in der eigentlichen Separationskette verwendete Paket mRMRe \cite{mrmre} berechnet die $\text{MI}$ über eine lineare Näherung mit dem Pearson-Korrelationskoeffizienten $ρ$ zu $\text{MI}= -\frac12 \ln \left(1- ρ (X,Y) \right)^2$. 
+Als Optimierungskriterium wird eine Art der MID verwendet, die die durchschnittliche Redundanz zu bereits ausgewählten Attributen minimiert.
+Vorteil dieser Methode ist eine kürzere Laufzeit.
+
+Um eine Aussage über die Stabilität der Selektion treffen zu können, wird die Attributsselektion mehrmals auf disjunkten Teilmengen von Ereignissen wiederholt.
+Als Maß für den Unterschied zweier Mengen ausgewählter Attribute $F_a$ und $F_b$ dient der Jaccard-Index $J$ \cite{jaccardIndex}:
+\begin{equation}
+    J = \frac{|F_a \cap F_b|}{|F_a \cup F_b|}
+\end{equation}
+Werden $n$ Selektionen für den Stabilitätstest durchgeführt, können alle Jaccard-Indices für die möglichen Mengenkombinationen zu einer Gesamtstabilität gemittelt werden:
+\begin{equation}
+    \hat{J} = \binom{n}{2}^{-1} \sum ^n _{i=1} \sum ^n _{j=i+1} J(F_i,F_j)
+\end{equation}
+
+
+\subsection*{Klassifizierung mittels Random Forest }
+Der Random Forest dient zur Klassifizierung von Ereignissen und wird auf gelabelten Daten, solche für die die Klassenzugehörigkeit bekannt ist, trainiert.
+Mit dem trainierten Random Forest ist es anschließend möglich eine Vorhersage der Klassenzugehörigkeit von ungelabelten Daten zu treffen.
+Der Random Forest  besteht aus mehreren Entscheidungsbäumen \cite{DecisionTrees}.
+Jedem Baum steht eine zufällig gezogene Teilmenge an Ereignissen aus der Gesamtmenge an Ereignissen zur Verfügung. 
+Auf dieser Teilmenge werden schrittweise Schnitte durchgeführt, anhand derer ein Ereignis als Signal oder Untergrund klassifiziert wird.
+Jeder Schnitt wird so gewählt, dass er ein Optimierungskriterium maximiert.
+Für ein Ereignis erzeugt jeder Baum so eine Zuordnung.
+Bei einem Zweiklassenproblem lassen sich die Zuordnungen eines Baums als Zahlenwerte 0 (Untergrund) und 1 (Signal) darstellen.
+Diese Werte lassen sich für jedes Ereignis zu einer sogenannten Konfidenz mitteln.
+Durch einen Konfidenzschnitt lässt sich jedes Ereignis einer Klasse zuordnen. 
+Dabei werden alle Ereignisse mit einer Konfidenz kleiner dem Schnittwert als Untergrund und alle anderen als Signal eingeordnet. 
+Die so eingeordneten Ereignisse werden auch Untergrund- und Signalkandidaten genannt.
+Näheres zu Random Forests ist in \cite{RandomForest} zu finden.
+
+Zur Einschätzung der Qualität der Separation lassen sich die so genannte Reinheit $R$ und die Effizienz $P$ verwenden.
+$R$ ist definiert als der Anteil der richtig als Signal klassifizierten Ereignisse an allen Signalkandidaten. 
+$P$ ist definiert als der Anteil der richtig als Signal klassifizierten Ereignisse an der Gesamtzahl von Signalereignissen.
+
+Beim Random Forest kann es zur Überanpassung an die für das Training verwendeten Ereignissen kommen.
+Diese sorgt dafür, dass der Lerner noch nicht gesehene Ereignisse des gleichen Typs falsch zuordnet.
+Um eine Abschätzung für diese Schwankung der Separationsergebnisse des Random Forests auf unterschiedlichen Ereignismengen zu erhalten kann eine $n$-fache Kreuzvalidierung (KV) durchgeführt werden.
+Bei der KV wird die verwendete Ereignismenge in $n$ gleich große Teile aufgeteilt. 
+In jedem Schritt der KV werden $n-1$ Teilmengen für das Trainieren eines Modells verwendet, das auf den übrig bleibenden Ereignissen validiert wird.
+Dieser Schritt wird $n$ mal durchgeführt, so dass jede Teilmenge ein Mal zur Validierung verwendet wird.
+Durch Optimierung der Separationsqualität auf Ereignissen auf denen das Modell nicht trainiert wurde kann eine Überanpassung an statistische Schwankungen vermieden werden.
+\cite{xvalKohavi}
+
+
+
+
+

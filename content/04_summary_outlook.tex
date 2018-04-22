@@ -1,0 +1,44 @@
+\chapter{Zusammenfassung und Ausblick}
+\subsection*{Zusammenfassung}
+In dieser Arbeit werden zwei gleich aufgebaute zweischrittige Separationen zur Selektion von atmosphärischen Myon-Neutrino-Kandidaten durchgeführt und ihre Ergebnisse verglichen.
+Die dafür notwendigen Ereignisse entstehen jeweils durch Filtern mit unterschiedlichen Vetoregionen, dem DC- und dem EXT-Veto, die alle Ereignisse verwerfen, deren Interaktion vermutlich im vom Veto definierten Vetovolumen stattfindet.
+Verwendet werden dafür Simulationsdaten von Myon, Elektron-Neutrino und Myon-Neutrino Ereignissen mit Attributen wie Energie- und Richtungsrekonstruktionen.
+Zuerst wird die jeweilige Vetobedingung auf alle vorhandenen Ereignisse angewendet.
+Dann werden mittels mRMRe 44 Attribute für die Separation von Myon- und Neutrinoereignissen ausgewählt.
+In der Neutrinoseparation wird in einer fünffachen Kreuzvalidierung ein Random Forest mit 50 Bäumen auf allen vorhandenen Myonereignissen und jeweils $\num{250000}$ Elektron- sowie Myon-Neutrino-Ereignissen trainiert.
+Dieser wird auf alle Simulationsdaten angewendet.
+Alle Ereignisse mit einer Konfidenz unter 0.9 werden dem Untergrund zugeordnet und verworfen, alle anderen sind Signalereigniskandidaten. 
+Für das DC-Veto bleiben nach diesem Schritt $\num{54077}$ simulierte Ereignisse mit einer Gesamtrate von $\SI{40.76}{µHz}$ übrig, für das EXT-Veto bleiben $\num{10716}$ Ereignisse mit einer Rate von $\SI{8.01}{µHz}$ übrig.
+Unter den selektierten Ereignissen sind nur noch Elektron- und Myon-Neutrinos. 
+Sie werden in einer zweiten Separation voneinander getrennt.
+Dafür werden mittels mRMRe 36 Attribute selektiert und in einer fünffachen Kreuzvalidierung je ein Random Forest mit 200 Bäumen trainiert.
+Die Ereignisse werden so in Myon-Neutrino- (Signal) und Elektron-Neutrino-Kandidaten (Untergrund) separiert.
+Der Konfidenzschnitt wird bei 0.84 gesetzt, was beim DC-Veto zu einer Signalreinheit von $\SI{95.3(8)}{\%}$ führt. 
+Für das DC-Veto bleiben Signalereigniskandidaten mit einer Gesamtrate von $\SI{4.63}{µHz}$ übrig, für das EXT-Veto $\SI{1.67}{µHz}$.
+Auf Basis der Raten an verbleibenden Signalereigniskandidaten wird ein Vergleich der beiden Vetoregionen durchgeführt.
+Nach dem ersten Separationsschritt werden die Neutrinoereignisraten zusammen mit der Konfidenz und wahren Energie der Ereignisse verglichen.
+Es zeigt sich, dass das DC-Veto für Konfidenzen größer 0.64 in jedem Energiebereich über höhere Ereignisraten als das EXT-Veto verfügt.
+Beim Vergleich der rekonstruierten und wahren Energie der Ereignisse ergibt sich für die Vetos eine Korrelation von $ρ_\text{DC} = 0.7$ und $ρ_\text{EXT} = 0.67$, sowie ein Überschätzen der wahren Energie. 
+Danach werden die Raten von Kandidaten für Myon-Neutrino-Ereignisse nach der zweiten Separation verglichen.
+Die Raten des DC-Vetos sind für jeden Konfidenz- und Energiebereich höher als die des EXT-Vetos.
+
+
+\subsection*{Ausblick}
+
+Weiterführend kann die in dieser Arbeit aufgestellte Separations- und Analysekette automatisiert werden, um weitere Vetodefinitionen und ihre Effekte auf die Qualität der Separation zu testen.
+Zudem sollte ein Vergleich der Simulationsdaten mit experimentellen Daten durchgeführt werden und Attribute mit zu geringer Übereinstimmung entfernt werden.
+Damit wird sichergestellt, dass die Separation auf experimentellen Daten ähnliche Ergebnisse liefert, wie in der Kreuzvalidierung.
+Zusätzlich kann die durchgeführte Separation weiter verbessert werden.
+Um die Trennkraft zu erhöhen können neue, auf den Niederenergiebereich angepasste, Attribute erstellt werden.
+Anstatt die Vetoentscheidungen wie bisher als Filter für Ereignisse zu verwenden, können sie dem Lerner als Attribut übergeben werden.
+
+Bei der Neutrinoselektion gehen die meisten Signalereignisse verloren.
+Hauptursache dafür ist wahrscheinlich die geringe Anzahl an \texttt{Corsika} Untergrund\-ereignissen.
+Um dem entgegen zu wirken können mehr Myonereignisse simuliert und zum Trainieren verwendet werden.
+Es können auch experimentelle Daten als Myonuntergrund verwendet werden.
+Möglich ist dies durch das hohe Signal-Untergrund-Verhältnis von $1$:$10^3$.
+Der geringe Anteil an Neutrinos in solch einem Untergrunddatensatz beeinträchtigt die Separationsqualität des Random Forests durch seine Robustheit gegenüber falsch gelabelten Ereignissen nur in geringem Maße.
+Um Stabilität und Trennkraft der Separation zu erhöhen kann eine höhere Zahl von Bäumen trainiert werden.
+Auf Grund von Limitationen der Rechenzeit waren die in dieser Arbeit durchgeführten Neutrinoseparationen auf 50 Bäume begrenzt.
+Die Separation der Myon-Neutrinos sollte sich durch eine mehrfache Separation für unterschiedliche Energiebereiche verbessern lassen.
+Eine so optimierte Separationskette kann auf aktuelle experimentelle Daten angewendet werden, um etwa eine Bestimmung des Myon-Neutrinoflusses zu ermöglichen. 

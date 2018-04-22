@@ -1,0 +1,24 @@
+\thispagestyle{plain}
+\sisetup{range-phrase=-}
+
+\section*{Kurzfassung}
+In dieser Arbeit wird ein Vergleich zweier Vetoregionen für den IceCube Detektor im Energiebereich von $\SIrange{1}{1000}{GeV}$ durchgeführt.
+Die Vetoregionen (DC und EXT) unterscheiden sich in ihrer Grundfläche.
+Auf Basis von simulierten Ereignissen atmosphärischer Myonen, Elektron- und Myon-Neutrinos werden durch Anwenden der Vetos zwei Datensätze generiert. 
+Nach vorheriger Attributsselektion durch mRMRe werden diese in einer zweistufigen Separation mit Random Forests separiert. 
+Es werden zuerst alle Neutrinoereignisse von Myonereignissen getrennt.
+Von den übrigen Neutrinoereignissen werden Myon-Neutrinos als Signal selektiert.
+Nach jeder Separation werden die relativen Differenzen der Ereignisraten der beiden Vetos und die Korrelation zwischen rekonstruierter und wahrer Energie der Ereignisse verglichen.
+Mit einer erwarteten Myon-Neutrino-Rate von $\SI{4.63}{µHz}$ und einer Korrelation von 0.7 zeigt sich das DC-Veto dem EXT-Veto überlegen.
+
+\section*{Abstract}
+\begin{english}
+    Within this thesis a comparison between two veto regions (DC and EXT) for the IceCube detector is made in the $\SIrange{1}{1000}{GeV}$ energy range.
+    Simulation data consisting of muons, electron neutrinos and muon neutrinos is used.
+    Applying the vetoes to those events yields two new sets of events, each consisting only of events passing the corresponding veto.
+    Relevant features are selected via mRMRe and used in a two staged random forest separation.
+    First, all neutrinos are separated from muons, then muon neutrino candidates are separated from the remaining electron neutrinos.
+    For each stage the passing event rates and correlation between reconstructed and true energy are compared.
+    The DC-Veto is shown to be superior, with an expected muon neutrino rate of $\SI{4.63}{µHz}$ and a correlation of 0.7.
+    %(Whereas the EXT-Veto has a rate of $\SI{1.67}{µHz}$ and a correlation of 0.67.?)
+\end{english}
