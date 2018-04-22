@@ -1,3 +1,6 @@
+My bachelor thesis, written in 2016. pdf is in `build/`
+
+
 TUDoThesis
 =====================
 
