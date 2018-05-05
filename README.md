@@ -1,4 +1,15 @@
-My bachelor thesis, written in 2016. pdf is in `build/`
+My bachelor thesis, written in 2016. Pdf is in `build/`
+
+Abstract
+========
+Within this thesis a comparison between two veto regions (DC and EXT) for the IceCube detector is made in the 1 to 1000 GeV energy range.
+Simulation data consisting of muons, electron neutrinos and muon neutrinos is used.
+Applying the vetoes to those events yields two new sets of events, each consisting only of events passing the corresponding veto.
+Relevant features are selected via mRMRe and used in a two staged random forest separation.
+First, all neutrinos are separated from muons, then muon neutrino candidates are separated from the remaining electron neutrinos.
+For each stage the passing event rates and correlation between reconstructed and true energy are compared.
+The DC-Veto is shown to be superior, with an expected muon neutrino rate of 4.63 µHz and a correlation of 0.7.
+
 
 
 TUDoThesis
